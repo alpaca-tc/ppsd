@@ -1,0 +1,19 @@
+/.bundle/
+/.yardoc
+/Gemfile.lock
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/spec/tmp
+/tmp/
+/vendor/bundle
+
+# These probably should be in global gitignore.
+*sublime*
+.DS_Store
+.tags*
+.foreman
+*.swp*
+/.rbenv-version
