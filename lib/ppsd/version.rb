@@ -1,3 +1,3 @@
-module Ppsd
-  VERSION = "0.1.0"
+module PPSD
+  VERSION = '0.1.0'
 end

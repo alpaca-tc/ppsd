@@ -1,5 +1,5 @@
-require "ppsd/version"
+require 'ppsd/version'
+require 'ppsd/ppsd'
 
-module Ppsd
-  # Your code goes here...
+module PPSD
 end
