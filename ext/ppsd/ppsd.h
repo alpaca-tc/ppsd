@@ -4,7 +4,7 @@
 #include "ruby.h"
 
 // Native mixin
-#include "image.h"
+// #include "image.h"
 
 // ppsd.c
 void Init_ppsd();
