@@ -1,5 +1,7 @@
 require 'ppsd/version'
-require 'ppsd/ppsd'
+require 'ppsd/psd_file'
+require 'ppsd/header'
 
-module PPSD
+class PPSD
+  class InvalidPsdFile < RuntimeError; end
 end

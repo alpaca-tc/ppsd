@@ -2,8 +2,11 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
 require 'ppsd'
 require 'pry'
+require 'pathname'
 
 RSpec.configure do |config|
+  Dir[Pathname.new(__dir__).join('support/**/*.rb')].each { |f| require f }
+
   config.raise_errors_for_deprecations!
   config.order = :random
   config.profile_examples = 10
