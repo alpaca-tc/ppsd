@@ -2,24 +2,16 @@
 class PPSD
   class Header
     # TODO: 全パターンを試して、より正確な結果を出す
-    MODES = %w(
-      Bitmap
-      GrayScale
-      IndexedColor
-      RGBColor
-      CMYKColor
-      HSLColor
-      HSBColor
-      Multichannel
-      Duotone
-      LabColor
-      Gray16
-      RGB48
-      Lab48
-      CMYK64
-      DeepMultichannel
-      Duotone16
-    ).freeze
+    COLOR_MODES = {
+      0 => 'Bitmap',
+      1 => 'Grayscale',
+      2 => 'Indexed',
+      3 => 'RGB',
+      4 => 'CMYK',
+      7 => 'Multichannel',
+      8 => 'Duotone',
+      9 => 'Lab'
+    }.freeze
 
     def initialize(psd_file)
       @psd_file = psd_file
@@ -27,7 +19,11 @@ class PPSD
 
     def color_mode
       parse_header
-      MODES[@mode]
+      @color_mode
+    end
+
+    def color_mode_name
+      COLOR_MODES[color_mode]
     end
 
     def signature
@@ -89,7 +85,7 @@ class PPSD
       @depth = @psd_file.read_u_short
 
       # The color mode of the file. Supported values are: Bitmap = 0; Grayscale = 1; Indexed = 2; RGB = 3; CMYK = 4; Multichannel = 7; Duotone = 8; Lab = 9.
-      @mode = @psd_file.read_u_short
+      @color_mode = @psd_file.read_u_short
     end
 
     def verify_file_version!

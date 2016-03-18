@@ -33,7 +33,7 @@ RSpec.describe PPSD::Header do
   end
 
   describe '#color_mode' do
-    subject { header.color_mode }
-    it { is_expected.to eq('CMYKColor') }
+    subject { header.color_mode_name }
+    it { is_expected.to eq('CMYK') }
   end
 end
