@@ -8,7 +8,7 @@ class PPSD
       raise NotImplementedError, 'color_mode_data is not implemented'
     end
 
-    def tail_pos_of_color_mode_data
+    def termination_pos
       parse_color_mode_data
       @psd_file.pos
     end

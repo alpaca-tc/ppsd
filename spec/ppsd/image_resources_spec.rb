@@ -11,4 +11,9 @@ RSpec.describe PPSD::ImageResources do
     subject { image_resources.resources }
     it { is_expected.to be_a(Array) }
   end
+
+  describe '#termination_pos' do
+    subject { image_resources.termination_pos }
+    it { is_expected.to be_a(Integer) }
+  end
 end

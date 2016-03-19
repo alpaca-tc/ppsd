@@ -10,26 +10,31 @@ class PPSD
       @resources
     end
 
+    def termination_pos
+      return @termination_pos if @termination_pos
+
+      seek_section_head
+      section_length = @psd_file.read_u_int
+      @termination_pos = section_length + @psd_file.pos
+    end
+
     private
+
+    # Seek image resources section
+    def seek_section_head
+      seek_pos = ColorModeData.new(@psd_file).termination_pos
+      @psd_file.seek(seek_pos, IO::SEEK_SET)
+    end
 
     def parse_image_resources
       return if @parsed_image_resources
       @parsed_image_resources = true
 
-      # Seek image resources section
-      seek_pos = ColorModeData.new(@psd_file).tail_pos_of_color_mode_data
-      @psd_file.seek(seek_pos, IO::SEEK_SET)
-
-      section_length = @psd_file.read_u_int
-      finish_pos = section_length + @psd_file.pos
-
-      while @psd_file.pos < finish_pos
+      while @psd_file.pos < termination_pos
         resource = PPSD::ImageResource.new(@psd_file)
         @resources << resource
         @psd_file.seek(resource.termination_pos, IO::SEEK_SET)
       end
-
-      puts @resources.map(&:signature)
     end
   end
 end
