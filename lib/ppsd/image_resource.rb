@@ -1,7 +1,8 @@
 class PPSD
   class ImageResource
-    def initialize(psd_file)
-      @psd_file = psd_file
+    def initialize(parser)
+      @parser = parser
+      @psd_file = parser.psd_file
       @cur_pos = @psd_file.pos
     end
 

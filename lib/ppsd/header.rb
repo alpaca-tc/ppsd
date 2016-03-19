@@ -1,6 +1,6 @@
 # http://www.adobe.com/devnet-apps/photoshop/fileformatashtml/#50577409_19840
 class PPSD
-  class Header
+  class Header < Section
     # TODO: 全パターンを試して、より正確な結果を出す
     COLOR_MODES = {
       0 => 'Bitmap',
@@ -12,10 +12,6 @@ class PPSD
       8 => 'Duotone',
       9 => 'Lab'
     }.freeze
-
-    def initialize(psd_file)
-      @psd_file = psd_file
-    end
 
     def color_mode
       parse_header
@@ -51,14 +47,29 @@ class PPSD
       @width
     end
 
+    def termination_pos
+      26
+    end
+
+    def to_h
+      %i(color_mode color_mode_name signature version channels height width).each_with_object({}) do |name, memo|
+        memo[name] = public_send(name)
+      end
+    end
+
     private
 
+    def seek_section_head
+      @psd_file.seek(0, IO::SEEK_SET)
+    end
+
     def parse_header
-      return if @parse_header
-      @parse_header = true
+      return if @signature
+
+      seek_section_head
 
       # Initialize psd file
-      @psd_file.seek(0, IO::SEEK_SET)
+      seek_section_head
 
       # Signature: always equal to '8BPS' . Do not try to read the file if the signature does not match this value.
       @signature = @psd_file.read_bytes(4)

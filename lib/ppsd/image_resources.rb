@@ -1,37 +1,43 @@
 class PPSD
-  class ImageResources
-    def initialize(psd_file)
-      @psd_file = psd_file
-      @resources = []
-    end
-
+  class ImageResources < Section
     def resources
       parse_image_resources
       @resources
     end
 
     def termination_pos
-      return @termination_pos if @termination_pos
+      # Calculate @termination_pos
+      seek_image_resource_variable_head unless @termination_pos
 
-      seek_section_head
-      section_length = @psd_file.read_u_int
-      @termination_pos = section_length + @psd_file.pos
+      @termination_pos
     end
 
     private
 
     # Seek image resources section
     def seek_section_head
-      seek_pos = ColorModeData.new(@psd_file).termination_pos
-      @psd_file.seek(seek_pos, IO::SEEK_SET)
+      @psd_file.seek(@parser.color_mode_data.termination_pos, IO::SEEK_SET)
+    end
+
+    def seek_image_resource_variable_head
+      seek_section_head
+      variable_length = @psd_file.read_u_int
+
+      @image_resource_variable_head = @psd_file.pos
+      @termination_pos = @image_resource_variable_head + variable_length
+
+      @psd_file.seek(@image_resource_variable_head, IO::SEEK_SET)
     end
 
     def parse_image_resources
-      return if @parsed_image_resources
-      @parsed_image_resources = true
+      return if @resources
+
+      @resources = []
+
+      seek_image_resource_variable_head
 
       while @psd_file.pos < termination_pos
-        resource = PPSD::ImageResource.new(@psd_file)
+        resource = PPSD::ImageResource.new(@parser)
         @resources << resource
         @psd_file.seek(resource.termination_pos, IO::SEEK_SET)
       end

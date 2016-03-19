@@ -1,28 +1,25 @@
 class PPSD
-  class ColorModeData
-    def initialize(psd_file)
-      @psd_file = psd_file
-    end
-
+  class ColorModeData < Section
     def color_mode_data
       raise NotImplementedError, 'color_mode_data is not implemented'
     end
 
     def termination_pos
-      parse_color_mode_data
-      @psd_file.pos
+      return @termination_pos if @termination_pos
+
+      seek_section_head
+      @termination_pos = @psd_file.read_u_int + @psd_file.pos
     end
 
     private
 
-    def parse_color_mode_data
-      # Seek color mode data
-      @psd_file.seek(26, IO::SEEK_SET)
-      color_data_length = @psd_file.read_u_int
+    # Seek color mode data
+    def seek_section_head
+      @psd_file.seek(@parser.header.termination_pos, IO::SEEK_SET)
+    end
 
-      # Returns color data
-      # TODO: Parse color data
-      @psd_file.seek(color_data_length, IO::SEEK_CUR)
+    def parse_color_mode_data
+      raise NotImplementedError, 'not implemented yet'
     end
   end
 end
