@@ -13,8 +13,8 @@ RSpec.describe PPSD::Image do
     it { is_expected.to eq(1) }
   end
 
-  describe '#variable' do
-    subject { image.variable }
+  describe '#parse!' do
+    subject { image.parse!}
     it { is_expected.to eq(1) }
   end
 end
