@@ -4,18 +4,31 @@ class PPSD
 
   class Image < Section
     def compression_method
-      @compression_method ||= begin
-        seek_section_head
-        @psd_file.read_short
-      end
+      return @compression_method if @compression_method
+
+      seek_section_head
+      @compression_method = @psd_file.read_short
     end
 
-    def variable
-      seek_variable_head
-      # TODO: 各チャンネル、各color modeに合わせてパーサーを書く
+    def channel
+      return @channel if @channel
+
+      channel_names = {
+        0 => :Bitmap,
+        1 => :Grayscale,
+        2 => :Indexed,
+        3 => :Rgb,
+        4 => :Cmyk,
+        7 => :Multichannel,
+        8 => :Duotone,
+        9 => :Lab
+      }
+
+      const_name = channel_names[@parser.header.color_mode]
+      @channel = PPSD::Channel.const_get(const_name).new
     end
 
-    def parse!
+    def to_file
       image_parser.to_file('out.png')
     end
 
@@ -25,18 +38,22 @@ class PPSD
 
     private
 
-    def image_parser
-      @image_parser ||= case compression_method
-                        when 0
-                        when 1
-                          PPSD::ImageParser::RleCompressed.new(self)
-                        when 2
-                        when 3
-                        end
-    end
-
     def seek_section_head
       @psd_file.seek(@parser.layer_and_mask_information.termination_pos, IO::SEEK_SET)
+    end
+
+    def image_parser
+      return @image_parser if @image_parser
+
+      compression_method_names = {
+        0 => :Raw,
+        1 => :RleCompressed,
+        2 => :ZipWithoutPrediction,
+        3 => :ZipWithoutPrediction
+      }
+
+      const_name = compression_method_names[compression_method]
+      @image_parser = PPSD::ImageParser.const_get(const_name).new(self)
     end
   end
 end

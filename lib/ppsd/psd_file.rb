@@ -49,6 +49,10 @@ class PPSD
       end
     end
 
+    def read_byte
+      read(1).bytes.to_a[0]
+    end
+
     def read_bytes(length)
       read(length).delete("\000")
     end

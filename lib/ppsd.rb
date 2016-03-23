@@ -8,6 +8,8 @@ require 'ppsd/image_resource'
 require 'ppsd/image_resources'
 require 'ppsd/layer_and_mask_information'
 require 'ppsd/image'
+require 'ppsd/color'
+require 'ppsd/channel'
 
 class PPSD
   class InvalidPsdFile < RuntimeError; end

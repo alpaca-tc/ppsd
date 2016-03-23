@@ -47,6 +47,11 @@ class PPSD
       @width
     end
 
+    def depth
+      parse_header
+      @depth
+    end
+
     def termination_pos
       26
     end

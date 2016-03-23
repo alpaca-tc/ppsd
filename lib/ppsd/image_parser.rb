@@ -1,4 +1,9 @@
 class PPSD::ImageParser
+  autoload :Raw, 'ppsd/image_parser/raw'
+  autoload :RleCompressed, 'ppsd/image_parser/rle_compressed'
+  autoload :ZipWithoutPrediction, 'ppsd/image_parser/zip_without_prediction'
+  autoload :ZipWithPrediction, 'ppsd/image_parser/zip_with_prediction'
+
   attr_reader :image_section, :parser, :psd_file
 
   def initialize(image_section)
@@ -15,7 +20,7 @@ class PPSD::ImageParser
 
   private
 
-  def seek_section_head
+  def seek_variable_head
     @psd_file.seek(@image_section.variable_pos, IO::SEEK_SET)
   end
 
